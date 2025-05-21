@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>ניהול הזמנות - SuperStyle</title>
+  <style>
+    body { font-family: Arial, sans-serif; direction: rtl; padding: 20px; background: #f6f6f6; }
+    h2 { text-align: center; }
+    .order { background: #fff; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    button { background: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #218838; }
+    .completed { background: #e0ffe0; border-color: #88cc88; }
+  </style>
+</head>
+<body>
+
+<h2>📦 ניהול הזמנות - SuperStyle</h2>
+
+<div id="orders-container"></div>
+
+<script>
+  const ordersContainer = document.getElementById("orders-container");
+  let orders = JSON.parse(localStorage.getItem("superstyle_orders")) || [];
+
+  function renderOrders() {
+    ordersContainer.innerHTML = "";
+    orders.forEach((order, index) => {
+      const orderDiv = document.createElement("div");
+      orderDiv.className = "order" + (order.completed ? " completed" : "");
+      orderDiv.innerHTML = `
+        <h3>הזמנה #${index + 1}</h3>
+        <p><strong>שם:</strong> ${order.name}</p>
+        <p><strong>אימייל:</strong> ${order.email}</p>
+        <p><strong>כתובת:</strong> ${order.address}</p>
+        <p><strong>מוצרים:</strong><br>${order.items.replace(/\n/g, "<br>")}</p>
+        ${order.completed ? "<p>✅ סומן כטופל</p>" : `<button onclick="markCompleted(${index})">✔ סמן כטופלה</button>`}
+      `;
+      ordersContainer.appendChild(orderDiv);
+    });
+  }
+
+  function markCompleted(index) {
+    orders[index].completed = true;
+    localStorage.setItem("superstyle_orders", JSON.stringify(orders));
+    renderOrders();
+  }
+
+  renderOrders();
+</script>
+
+</body>
+</html>
