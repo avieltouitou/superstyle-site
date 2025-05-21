@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>ניהול הזמנות - SuperStyle</title>
+  <style>
+    body { font-family: Arial, sans-serif; direction: rtl; padding: 20px; }
+    form { max-width: 500px; margin: auto; background: #f9f9f9; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    input, textarea, select { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ccc; }
+    button { background: #222; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #444; }
+    .order-summary { margin-top: 30px; max-width: 600px; margin: auto; }
+  </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">דף הזמנות - SuperStyle</h2>
+
+<form id="order-form">
+  <label>שם מלא:
+    <input type="text" id="full-name" required>
+  </label>
+  <label>אימייל:
+    <input type="email" id="email" required>
+  </label>
+  <label>כתובת משלוח:
+    <textarea id="address" required></textarea>
+  </label>
+  <label>פריטים שנבחרו:
+    <textarea id="items" readonly placeholder="יתמלא אוטומטית מהמוצרים שלך..."></textarea>
+  </label>
+  <button type="submit">שלח הזמנה</button>
+</form>
+
+<div class="order-summary" id="order-summary"></div>
+
+<script>
+  // משיכת פריטים מסל הקניות (אם שמורים בלוקאל סטורג')
+  const itemsField = document.getElementById('items');
+  const cart = JSON.parse(localStorage.getItem("products")) || [];
+  itemsField.value = cart.map(p => p.name + " - " + p.price + " ₪").join("\n");
+
+  document.getElementById("order-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const name = document.getElementById("full-name").value;
+    const email = document.getElementById("email").value;
+    const address = document.getElementById("address").value;
+    const items = document.getElementById("items").value;
+
+    const summary = `
+      <h3>הזמנה התקבלה בהצלחה!</h3>
+      <p><strong>שם:</strong> ${name}</p>
+      <p><strong>אימייל:</strong> ${email}</p>
+      <p><strong>כתובת:</strong> ${address}</p>
+      <p><strong>מוצרים:</strong><br>${items.replace(/\n/g, "<br>")}</p>
+    `;
+    document.getElementById("order-summary").innerHTML = summary;
+    alert("הזמנתך התקבלה! תודה שרכשת ב-SuperStyle.");
+    this.reset();
+  });
+</script>
+
+</body>
+</html>
